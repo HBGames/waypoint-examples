@@ -9,10 +9,18 @@ job "web" {
       health_check = "task_states"
     }
 
+    network {
+      mode = "bridge"
+      port "http" {
+        to = 3000
+      }
+    }
+
     task "app" {
       driver = "docker"
       config {
         image = "${artifact.image}:${artifact.tag}"
+        ports = ["http"]
       }
 
       env {
@@ -22,6 +30,14 @@ job "web" {
 
         // For URL service
         PORT = "3000"
+      }
+    }
+
+    service {
+      name = "app"
+      port = 3000
+      connect {
+        sidecar_service {}
       }
     }
   }
