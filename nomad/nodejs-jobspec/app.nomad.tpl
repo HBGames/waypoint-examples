@@ -12,7 +12,8 @@ job "web" {
     network {
       mode = "bridge"
       port "http" {
-        to = 3000
+        to           = 3000
+        host_network = "public"
       }
     }
 
@@ -31,14 +32,33 @@ job "web" {
         // For URL service
         PORT = "3000"
       }
+
+      resources {
+        cpu    = 50
+        memory = 100
+      }
     }
 
     service {
       name = "app"
-      port = 3000
+      port = "http"
+
+      tags = [
+        "traefik.enable=true",
+        "traefik.consulcatalog.connect=true",
+        "traefik.http.routers.app.tls=false",
+        "traefik.http.routers.app.entrypoints=https",
+        "traefik.http.routers.app.rule=Host(`app.hitbox.cloud`)",
+        "traefik.http.services.app.loadBalancer.server.scheme=http"
+      ]
+
       connect {
         sidecar_service {}
       }
     }
+  }
+
+  meta {
+    waypoint.hashicorp.com/release_url = "https://app.hitbox.cloud"
   }
 }

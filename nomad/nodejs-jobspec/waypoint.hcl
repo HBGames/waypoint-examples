@@ -30,6 +30,10 @@ app "nodejs-jobspec-web" {
       fail_deployment = false
     }
   }
+
+  url {
+    auto_hostname = true
+  }
 }
 
 variable "registry_username" {
