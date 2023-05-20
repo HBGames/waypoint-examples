@@ -7,7 +7,7 @@ app "nodejs-jobspec-web" {
   build {
     use "docker" {
       buildkit           = false
-      disable_entrypoint = false
+      disable_entrypoint = true
     }
     registry {
       use "docker" {
