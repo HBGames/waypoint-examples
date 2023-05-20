@@ -5,7 +5,10 @@ project = "nomad-jobspec-nodejs"
 
 app "nodejs-jobspec-web" {
   build {
-    use "docker" {}
+    use "docker" {
+      buildkit           = false
+      disable_entrypoint = false
+    }
     registry {
       use "docker" {
         image    = "registry.hub.docker.com/hbgames/nodejs-jobspec-web"
