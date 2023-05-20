@@ -59,6 +59,6 @@ job "web" {
   }
 
   meta {
-    waypoint.hashicorp.com/release_url = "https://app.hitbox.cloud"
+    "waypoint.hashicorp.com/release_url" = "https://app.hitbox.cloud"
   }
 }
