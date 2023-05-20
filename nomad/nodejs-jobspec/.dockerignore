@@ -1,2 +1,9 @@
 .vscode
 .waypoint
+
+Dockerfile
+
+*.nomad
+*.nomad.tpl
+README.md
+waypoint.hcl
