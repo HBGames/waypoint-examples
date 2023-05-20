@@ -20,4 +20,4 @@ ENV PORT=$PORT
 
 EXPOSE $PORT
 
-CMD [ "node", "index.js" ]
+CMD [ "/waypoint-entrypoint" "node", "index.js" ]
