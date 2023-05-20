@@ -1,5 +1,5 @@
 job "web" {
-  datacenters = ["dc1"]
+  datacenters = ["eu-central-1"]
   group "app" {
     update {
       max_parallel = 1
