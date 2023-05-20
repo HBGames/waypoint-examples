@@ -20,7 +20,9 @@ app "nodejs-jobspec-web" {
     use "nomad-jobspec" {
       // Templated to perhaps bring in the artifact from a previous
       // build/registry, entrypoint env vars, etc.
-      jobspec = templatefile("${path.app}/app.nomad.tpl")
+      jobspec      = templatefile("${path.app}/app.nomad.tpl")
+      consul_token = var.consul_token
+      vault_token  = var.vault_token
     }
   }
 
@@ -32,6 +34,18 @@ app "nodejs-jobspec-web" {
       fail_deployment = false
     }
   }
+}
+
+variable "consul_token" {
+  type        = string
+  sensitive   = true
+  description = "consul token"
+}
+
+variable "vault_token" {
+  type        = string
+  sensitive   = true
+  description = "vault token"
 }
 
 variable "registry_username" {
