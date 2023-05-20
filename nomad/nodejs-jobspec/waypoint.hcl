@@ -8,9 +8,10 @@ app "nodejs-jobspec-web" {
     use "pack" {}
     registry {
       use "docker" {
-        image = "hbgames/nodejs-jobspec-web"
-        tag   = "latest"
-        local = false
+        image    = "registry.hub.docker.com/hbgames/nodejs-jobspec-web"
+        tag      = "latest"
+        username = var.registry_username
+        password = var.registry_password
       }
     }
   }
@@ -34,20 +35,12 @@ app "nodejs-jobspec-web" {
 }
 
 variable "registry_username" {
-  default = dynamic("vault", {
-    path = "kv/data/docker"
-    key  = "/data/registry_username"
-  })
   type        = string
-  sensitive   = true # Notice this var is marked as sensitive
+  sensitive   = false
   description = "username for container registry"
 }
 
 variable "registry_password" {
-  default = dynamic("vault", {
-    path = "kv/data/docker"
-    key  = "/data/registry_password"
-  })
   type        = string
   sensitive   = true # Notice this var is marked as sensitive
   description = "password for registry"
