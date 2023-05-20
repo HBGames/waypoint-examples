@@ -57,8 +57,4 @@ job "web" {
       }
     }
   }
-
-  meta {
-    "waypoint.hashicorp.com/release_url" = "https://app.hitbox.cloud"
-  }
 }
