@@ -6,12 +6,13 @@ project = "nomad-nodejs"
 app "nomad-nodejs-web" {
 
   build {
-    use "pack" {}
+    use "docker" {}
     registry {
       use "docker" {
-        image = "nomad-nodejs-web"
-        tag   = "1"
-        local = true
+        image    = "registry.hub.docker.com/hbgames/nodejs-jobspec-web"
+        tag      = "latest"
+        username = var.registry_username
+        password = var.registry_password
       }
     }
   }
@@ -20,9 +21,20 @@ app "nomad-nodejs-web" {
     use "nomad" {
       // these options both default to the values shown, but are left here to
       // show they are configurable
-      datacenter = "dc1"
+      datacenter = "eu-central-1"
       namespace  = "default"
     }
   }
+}
 
+variable "registry_username" {
+  type        = string
+  sensitive   = false
+  description = "username for container registry"
+}
+
+variable "registry_password" {
+  type        = string
+  sensitive   = true # Notice this var is marked as sensitive
+  description = "password for registry"
 }

@@ -5,7 +5,7 @@ project = "nomad-jobspec-nodejs"
 
 app "nodejs-jobspec-web" {
   build {
-    use "pack" {}
+    use "docker" {}
     registry {
       use "docker" {
         image    = "registry.hub.docker.com/hbgames/nodejs-jobspec-web"
