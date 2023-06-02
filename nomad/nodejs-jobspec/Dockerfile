@@ -15,8 +15,6 @@ RUN npm install --omit=dev
 # Bundle app source
 COPY . .
 
-ARG WAYPOINT_VERSION=0.11.1
-
 RUN wget -O /tmp/waypoint-entrypoint.zip https://releases.hashicorp.com/waypoint-entrypoint/0.11.1/waypoint-entrypoint_0.11.1_linux_arm64.zip
 RUN unzip /tmp/waypoint-entrypoint.zip -d /
 RUN rm /tmp/waypoint-entrypoint.zip
@@ -26,4 +24,4 @@ ENV PORT=$PORT
 
 EXPOSE $PORT
 
-ENTRYPOINT [ "/waypoint-entrypoint", "node", "index.js" ]
+ENTRYPOINT [ "/waypoint-entrypoint", "/usr/local/bin/docker-entrypoint.sh", "node", "index.js" ]

@@ -1,6 +1,11 @@
-job "web" {
+job "${app.name}" {
+  name        = "${app.name}"
+  region      = "eu-central"
   datacenters = ["eu-central-1"]
+
   group "app" {
+    count = 2
+
     update {
       max_parallel = 1
       canary       = 1
@@ -12,8 +17,7 @@ job "web" {
     network {
       mode = "bridge"
       port "http" {
-        to           = 3000
-        host_network = "public"
+        host_network = "private"
       }
     }
 
@@ -22,15 +26,25 @@ job "web" {
       config {
         image = "${artifact.image}:${artifact.tag}"
         ports = ["http"]
+
+        auth {
+          username = "${registry_username}"
+          password = "${registry_password}"
+        }
       }
 
       env {
         %{ for k,v in entrypoint.env ~}
         ${k} = "${v}"
         %{ endfor ~}
+      }
 
-        // For URL service
-        PORT = "3000"
+      template {
+        data        = <<EOH
+PORT={{ env "NOMAD_PORT_http"}}
+        EOH
+        destination = "local/env"
+        env         = true
       }
 
       resources {
@@ -39,22 +53,42 @@ job "web" {
       }
     }
 
+    shutdown_delay = "1m"
+
     service {
-      name = "app"
+      name = "${app.name}"
       port = "http"
+
+      check {
+        type     = "http"
+        path     = "/"
+        interval = "3s"
+        timeout  = "1s"
+      }
 
       tags = [
         "traefik.enable=true",
         "traefik.consulcatalog.connect=true",
-        "traefik.http.routers.app.tls=false",
-        "traefik.http.routers.app.entrypoints=https",
-        "traefik.http.routers.app.rule=Host(`app.hitbox.cloud`)",
-        "traefik.http.services.app.loadBalancer.server.scheme=http"
+        "traefik.http.routers.${app.name}.tls=true",
+        "traefik.http.routers.${app.name}.entrypoints=https",
+        "traefik.http.routers.${app.name}.rule=Host(`${app.name}.hitbox.cloud`)",
+        "traefik.http.services.${app.name}.loadBalancer.server.scheme=http",
+        "cloudflare.domain=${app.name}.hitbox.cloud",
+        "version=${artifact.tag}",
+        "blue"
       ]
+
+      canary_tags = ["green"]
 
       connect {
         sidecar_service {}
       }
     }
+  }
+
+  meta = {
+    version = "${artifact.tag}"
+    // Ensure we set meta for Waypoint to detect the release URL
+    "waypoint.hashicorp.com/release_url" = "https://app--${artifact.tag}.hitbox.cloud"
   }
 }
