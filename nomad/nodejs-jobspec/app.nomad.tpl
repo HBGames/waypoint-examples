@@ -4,7 +4,7 @@ job "${app.name}" {
   datacenters = ["eu-central-1"]
 
   group "app" {
-    count = 2
+    count = 1
 
     update {
       max_parallel = 1
