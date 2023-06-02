@@ -9,10 +9,8 @@ app "nomad-nodejs-web" {
     use "docker" {}
     registry {
       use "docker" {
-        image    = "registry.hub.docker.com/hbgames/nodejs-jobspec-web"
-        tag      = "latest"
-        username = var.registry_username
-        password = var.registry_password
+        image = "registry.hub.docker.com/hbgames/nodejs-jobspec-web"
+        tag   = "latest"
       }
     }
   }
@@ -25,16 +23,4 @@ app "nomad-nodejs-web" {
       namespace  = "default"
     }
   }
-}
-
-variable "registry_username" {
-  type        = string
-  sensitive   = false
-  description = "username for container registry"
-}
-
-variable "registry_password" {
-  type        = string
-  sensitive   = true # Notice this var is marked as sensitive
-  description = "password for registry"
 }

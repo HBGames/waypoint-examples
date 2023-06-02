@@ -26,11 +26,6 @@ job "${app.name}" {
       config {
         image = "${artifact.image}:${artifact.tag}"
         ports = ["http"]
-
-        auth {
-          username = "${registry_username}"
-          password = "${registry_password}"
-        }
       }
 
       env {

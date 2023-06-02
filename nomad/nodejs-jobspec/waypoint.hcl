@@ -3,16 +3,6 @@
 
 project = "nomad-jobspec-nodejs"
 
-
-runner {
-  enabled = true
-
-  data_source "git" {
-    url  = "https://github.com/HBGames/waypoint-examples.git"
-    path = "nomad/nodejs-jobspec"
-  }
-}
-
 // pipeline "build-and-blue-green-deployment" {
 //   step "build" {
 //     use "build" {
@@ -45,16 +35,14 @@ runner {
 app "nodejs-jobspec-web" {
   build {
     use "docker" {
-      buildkit           = true
+      buildkit           = false
       disable_entrypoint = true
-      platform           = "linux/arm64/v8"
+      // platform           = "linux/arm64/v8"
     }
     registry {
       use "docker" {
-        image    = "hbgames/nodejs-jobspec-web"
-        tag      = "latest" #gitrefpretty()
-        username = var.registry_username
-        password = var.registry_password
+        image = "hbgames/nodejs-jobspec-web"
+        tag   = "latest" #gitrefpretty()
       }
     }
   }
@@ -63,46 +51,18 @@ app "nodejs-jobspec-web" {
     use "nomad-jobspec" {
       // Templated to perhaps bring in the artifact from a previous
       // build/registry, entrypoint env vars, etc.
-      jobspec = templatefile("${path.app}/app.nomad.tpl", {
-        registry_username = var.registry_username
-        registry_password = var.registry_password
-      })
+      jobspec = templatefile("${path.app}/app.nomad.tpl", {})
     }
   }
 
-  // release {
-  //   use "nomad-jobspec-canary" {
-  //     groups          = ["app"]
-  //     fail_deployment = var.fail_deployment
-  //   }
-  // }
+  release {
+    use "nomad-jobspec-canary" {
+      groups          = ["app"]
+      fail_deployment = false
+    }
+  }
 
   url {
     auto_hostname = true
   }
-}
-
-variable "registry_username" {
-  default = dynamic("vault", {
-    path = "kv/data/docker"
-    key  = "/data/username"
-  })
-  type        = string
-  sensitive   = false
-  description = "username for container registry"
-}
-
-variable "registry_password" {
-  default = dynamic("vault", {
-    path = "kv/data/docker"
-    key  = "/data/password"
-  })
-  type        = string
-  sensitive   = true # Notice this var is marked as sensitive
-  description = "password for registry"
-}
-
-variable "fail_deployment" {
-  type    = bool
-  default = false
 }
