@@ -83,14 +83,20 @@ app "nodejs-jobspec-web" {
 }
 
 variable "registry_username" {
-  default     = "hbgames"
+  default = dynamic("vault", {
+    path = "kv/data/docker"
+    key  = "/data/username"
+  })
   type        = string
   sensitive   = false
   description = "username for container registry"
 }
 
 variable "registry_password" {
-  default     = "dckr_pat_BJtkG4s_d9Tsi564SQgyFhnCUUw"
+  default = dynamic("vault", {
+    path = "kv/data/docker"
+    key  = "/data/password"
+  })
   type        = string
   sensitive   = true # Notice this var is marked as sensitive
   description = "password for registry"
