@@ -8,7 +8,7 @@ runner {
   enabled = true
 
   data_source "git" {
-    url  = "https://github.com/hashicorp/waypoint-examples.git"
+    url  = "https://github.com/HBGames/waypoint-examples.git"
     path = "nomad/nodejs-jobspec"
   }
 }
